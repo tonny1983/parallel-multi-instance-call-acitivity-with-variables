@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cc.tonny.bpmn.camunda</groupId>
+    <artifactId>parallel-multi-instance-call-acitivity-with-variables</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <version.camunda-bpm>7.15.0</version.camunda-bpm>
+        <version.camunda-bpm-assert>11.0.0</version.camunda-bpm-assert>
+        <version.assertj-core>3.19.0</version.assertj-core>
+        <version.junit>4.13.2</version.junit>
+        <version.camunda-spin>1.14.0</version.camunda-spin>
+        <version.camunda-connector>1.5.2</version.camunda-connector>
+        <version.h2>1.4.200</version.h2>
+        <version.camunda-bpm-process-test-coverage>1.0.3</version.camunda-bpm-process-test-coverage>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.camunda.bpm</groupId>
+                <artifactId>camunda-bom</artifactId>
+                <type>pom</type>
+                <scope>import</scope>
+                <version>${version.camunda-bpm}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.camunda.bpm.assert</groupId>
+                <artifactId>camunda-bpm-assert</artifactId>
+                <version>${version.camunda-bpm-assert}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- camunda process engine -->
+        <dependency>
+            <groupId>org.camunda.bpm</groupId>
+            <artifactId>camunda-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${version.h2}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${version.assertj-core}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Camunda Platform assert -->
+        <dependency>
+            <groupId>org.camunda.bpm.assert</groupId>
+            <artifactId>camunda-bpm-assert</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${version.junit}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Camunda Coverage -->
+        <dependency>
+            <groupId>org.camunda.bpm.extension</groupId>
+            <artifactId>camunda-bpm-process-test-coverage-junit4</artifactId>
+            <version>${version.camunda-bpm-process-test-coverage}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- others -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.36</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.source}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

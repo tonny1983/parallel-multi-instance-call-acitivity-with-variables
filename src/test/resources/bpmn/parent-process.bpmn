@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1ut44ri" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="parent-process" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="javascript">execution.setVariable("total",0);</camunda:script>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_0a1t48x</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0a1t48x" sourceRef="StartEvent_1" targetRef="call-activity" />
+    <bpmn:endEvent id="Event_1xl5luf">
+      <bpmn:incoming>Flow_1aewjqp</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0und4sv" sourceRef="call-activity" targetRef="collect-variables-from-subprocess" />
+    <bpmn:callActivity id="call-activity" name="Call Subprocess" calledElement="sub-process">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="javascript">var system = java.lang.System;
+system.out.println(subVariable);
+
+execution.setVariable("total", total + subVariable);</camunda:script>
+        </camunda:executionListener>
+        <camunda:out source="subVariable" target="subVariable" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0a1t48x</bpmn:incoming>
+      <bpmn:outgoing>Flow_0und4sv</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics>
+        <bpmn:loopCardinality xsi:type="bpmn:tFormalExpression">3</bpmn:loopCardinality>
+      </bpmn:multiInstanceLoopCharacteristics>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_1aewjqp" sourceRef="collect-variables-from-subprocess" targetRef="Event_1xl5luf" />
+    <bpmn:scriptTask id="collect-variables-from-subprocess" name="collect variables from subprocess" camunda:asyncBefore="true" scriptFormat="javascript">
+      <bpmn:incoming>Flow_0und4sv</bpmn:incoming>
+      <bpmn:outgoing>Flow_1aewjqp</bpmn:outgoing>
+      <bpmn:script>var subprocesses = execution.getProcessEngineServices().getHistoryService().createHistoricProcessInstanceQuery().superProcessInstanceId(execution.getProcessInstanceId()).list();
+
+var system = java.lang.System;
+
+var total = 0;
+
+for (var i = 0; i &lt; subprocesses.size(); i++) {
+var subprocess = subprocesses.get(i);
+var id = subprocess.getId();
+var variable = execution.getProcessEngineServices().getHistoryService().createHistoricVariableInstanceQuery().processInstanceId(id).variableName("subVariable").singleResult();
+
+var value = variable.getValue();
+
+system.out.println(id + ":" + value);
+total += value;
+}
+
+execution.setVariable("anotherTotal", total);
+
+
+</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:textAnnotation id="TextAnnotation_1r4goca">
+      <bpmn:text>with end listener</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_18wkxxp" sourceRef="call-activity" targetRef="TextAnnotation_1r4goca" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="parent-process">
+      <bpmndi:BPMNEdge id="Flow_1aewjqp_di" bpmnElement="Flow_1aewjqp">
+        <di:waypoint x="520" y="207" />
+        <di:waypoint x="592" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0und4sv_di" bpmnElement="Flow_0und4sv">
+        <di:waypoint x="370" y="207" />
+        <di:waypoint x="420" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0a1t48x_di" bpmnElement="Flow_0a1t48x">
+        <di:waypoint x="215" y="207" />
+        <di:waypoint x="270" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="189" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1xl5luf_di" bpmnElement="Event_1xl5luf">
+        <dc:Bounds x="592" y="189" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05ozux2_di" bpmnElement="call-activity">
+        <dc:Bounds x="270" y="167" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1b792n4_di" bpmnElement="collect-variables-from-subprocess">
+        <dc:Bounds x="420" y="167" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1r4goca_di" bpmnElement="TextAnnotation_1r4goca">
+        <dc:Bounds x="370" y="80" width="100" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_18wkxxp_di" bpmnElement="Association_18wkxxp">
+        <di:waypoint x="356" y="167" />
+        <di:waypoint x="398" y="120" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
